@@ -60,7 +60,10 @@
         <div class="bg-blue-700 rounded-lg shadow-md p-4">
           <h3 class="text-xl font-bold mb-4">Categories</h3>
           <ul id="categoryList" class="space-y-2">
-            <!-- Categories will be dynamically populated here -->
+            <li><a href="#" class="text-white hover:text-blue-200">All</a></li>
+            <li><a href="#" class="text-white hover:text-blue-200">Puzzle</a></li>
+            <li><a href="#" class="text-white hover:text-blue-200">Action</a></li>
+            <!-- Add more categories as needed -->
           </ul>
         </div>
       </aside>
@@ -68,11 +71,39 @@
       <main class="w-full md:w-3/4 px-4">
         <h1 class="text-4xl font-bold text-white mb-8">All Games</h1>
         <div id="gameGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Game Cards will be dynamically populated here -->
+          <!-- Static Game Cards -->
+          <div class="game-card bg-blue-600 rounded-lg overflow-hidden shadow-lg relative" data-game-id="0d95d64a4b8e440981a7b067c483cdf2">
+            <div class="relative">
+              <img src="https://img.gamedistribution.com/0d95d64a4b8e440981a7b067c483cdf2-512x512.jpg" alt="Tile Match Connect 3 Tiles" class="game-thumbnail">
+              <div class="game-rating">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span>4.5</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-bold mb-2">Tile Match Connect 3 Tiles</h3>
+              <p class="text-sm text-blue-200">Match and connect tiles in this exciting puzzle game</p>
+            </div>
+          </div>
+          <div class="game-card bg-blue-600 rounded-lg overflow-hidden shadow-lg relative" data-game-id="unity-webgl-game">
+            <div class="relative">
+              <img src="path/to/unity-game-thumbnail.jpg" alt="Unity WebGL Game" class="game-thumbnail">
+              <div class="game-rating">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span>4.8</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-bold mb-2">Unity WebGL Game</h3>
+              <p class="text-sm text-blue-200">An exciting Unity WebGL game</p>
+            </div>
+          </div>
+          <!-- Add more game cards as needed -->
         </div>
       </main>
     </div>
   </div>
+
   <!-- Login Modal -->
   <div id="loginModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -110,10 +141,7 @@
     </div>
   </div>
 
-  <script src="games.js" defer></script>
   <script>
-    const categoryList = document.getElementById('categoryList');
-    const gameGrid = document.getElementById('gameGrid');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
     const loginButton = document.getElementById('loginButton');
@@ -123,75 +151,12 @@
     const loginSubmit = document.getElementById('loginSubmit');
     const registerSubmit = document.getElementById('registerSubmit');
 
-    function populateCategories() {
-      const categories = ['All', ...new Set(games.map(game => game.category))];
-      categoryList.innerHTML = categories.map(category => `
-        <li>
-          <a href="#" class="text-white hover:text-blue-200 category-link" data-category="${category.toLowerCase()}">
-            ${category}
-          </a>
-        </li>
-      `).join('');
-    }
-
-    function createGameCard(game) {
-      return `
-        <div class="game-card bg-blue-600 rounded-lg overflow-hidden shadow-lg relative" data-game-id="${game.id}">
-          <div class="relative">
-            <img src="${game.thumbnail}" alt="${game.title}" class="game-thumbnail">
-            <div class="game-rating">
-              <i class="fas fa-star text-yellow-400"></i>
-              <span>${game.rating.toFixed(1)}</span>
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-bold mb-2">${game.title}</h3>
-            <p class="text-sm text-blue-200">${game.description}</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function populateGames(gameList) {
-      gameGrid.innerHTML = gameList.map(game => createGameCard(game)).join('');
-    }
-
-    function searchGames(query) {
-      return games.filter(game => 
-        game.title.toLowerCase().includes(query.toLowerCase()) ||
-        game.description.toLowerCase().includes(query.toLowerCase()) ||
-        game.category.toLowerCase().includes(query.toLowerCase())
-      );
-    }
-
-    populateCategories();
-    populateGames(games);
-
-    categoryList.addEventListener('click', (event) => {
-      event.preventDefault();
-      const categoryLink = event.target.closest('.category-link');
-      if (categoryLink) {
-        const category = categoryLink.getAttribute('data-category');
-        const filteredGames = category === 'all' ? games : games.filter(game => game.category.toLowerCase() === category);
-        populateGames(filteredGames);
-      }
-    });
-
-    gameGrid.addEventListener('click', (event) => {
-      const gameCard = event.target.closest('.game-card');
-      if (gameCard) {
-        const gameId = gameCard.getAttribute('data-game-id');
-        window.location.href = `game.html?id=${encodeURIComponent(gameId)}`;
-      }
-    });
-
     searchButton.addEventListener('click', () => {
       const query = searchInput.value.trim();
       if (query) {
-        const searchResults = searchGames(query);
-        populateGames(searchResults);
+        alert('Search functionality would be implemented here.');
       } else {
-        populateGames(games);
+        alert('Please enter a search query.');
       }
     });
 
@@ -240,6 +205,14 @@
       if (event.target === registerModal) {
         registerModal.classList.add('hidden');
       }
+    });
+
+    // Game card click event
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const gameId = card.getAttribute('data-game-id');
+        window.location.href = `game.html?id=${encodeURIComponent(gameId)}`;
+      });
     });
   </script>
 </body>
