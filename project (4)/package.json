@@ -1,0 +1,15 @@
+{
+  "name": "gamezone",
+  "version": "1.0.0",
+  "description": "GameZone platform with Unity WebGL support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

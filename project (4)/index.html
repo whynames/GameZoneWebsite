@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameZone - All Games</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka One', cursive;
+      background-color: #0f4074;
+      color: #ffffff;
+    }
+    .game-card {
+      transition: transform 0.3s ease-in-out;
+      cursor: pointer;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+    }
+    .game-thumbnail {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .game-rating {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 2px 5px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <header class="bg-blue-800 shadow-md">
+    <div class="container mx-auto py-4 px-4 flex justify-between items-center">
+      <a href="#" class="text-4xl font-bold text-white" style="font-family: 'Luckiest Guy', cursive;">GameZone</a>
+      <div class="flex items-center space-x-4">
+        <input type="text" id="searchInput" placeholder="Search games..." class="px-4 py-2 rounded-full bg-white text-gray-800">
+        <button id="searchButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="loginButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Login</button>
+        <button id="registerButton" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Register</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mx-auto mt-8 px-4">
+    <div class="flex flex-wrap -mx-4">
+      <aside class="w-full md:w-1/4 px-4 mb-8">
+        <div class="bg-blue-700 rounded-lg shadow-md p-4">
+          <h3 class="text-xl font-bold mb-4">Categories</h3>
+          <ul id="categoryList" class="space-y-2">
+            <!-- Categories will be dynamically populated here -->
+          </ul>
+        </div>
+      </aside>
+
+      <main class="w-full md:w-3/4 px-4">
+        <h1 class="text-4xl font-bold text-white mb-8">All Games</h1>
+        <div id="gameGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Game Cards will be dynamically populated here -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Login</h3>
+        <div class="mt-2 px-7 py-3">
+          <input type="text" id="loginUsername" placeholder="Username" class="mb-3 px-3 py-2 border rounded w-full text-gray-700">
+          <input type="password" id="loginPassword" placeholder="Password" class="px-3 py-2 border rounded w-full text-gray-700">
+        </div>
+        <div class="items-center px-4 py-3">
+          <button id="loginSubmit" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Register</h3>
+        <div class="mt-2 px-7 py-3">
+          <input type="text" id="registerUsername" placeholder="Username" class="mb-3 px-3 py-2 border rounded w-full text-gray-700">
+          <input type="password" id="registerPassword" placeholder="Password" class="mb-3 px-3 py-2 border rounded w-full text-gray-700">
+          <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" class="px-3 py-2 border rounded w-full text-gray-700">
+        </div>
+        <div class="items-center px-4 py-3">
+          <button id="registerSubmit" class="px-4 py-2 bg-yellow-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="games.js"></script>
+  <script>
+    const categoryList = document.getElementById('categoryList');
+    const gameGrid = document.getElementById('gameGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const loginButton = document.getElementById('loginButton');
+    const registerButton = document.getElementById('registerButton');
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+
+    function populateCategories() {
+      const categories = ['All', ...new Set(games.map(game => game.category))];
+      categoryList.innerHTML = categories.map(category => `
+        <li>
+          <a href="#" class="text-white hover:text-blue-200 category-link" data-category="${category.toLowerCase()}">
+            ${category}
+          </a>
+        </li>
+      `).join('');
+    }
+
+    function createGameCard(game) {
+      return `
+        <div class="game-card bg-blue-600 rounded-lg overflow-hidden shadow-lg relative" data-game-id="${game.id}">
+          <div class="relative">
+            <img src="${game.thumbnail}" alt="${game.title}" class="game-thumbnail">
+            <div class="game-rating">
+              <i class="fas fa-star text-yellow-400"></i>
+              <span>${game.rating.toFixed(1)}</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-bold mb-2">${game.title}</h3>
+            <p class="text-sm text-blue-200">${game.description}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function populateGames(gameList) {
+      gameGrid.innerHTML = gameList.map(game => createGameCard(game)).join('');
+    }
+
+    function searchGames(query) {
+      return games.filter(game => 
+        game.title.toLowerCase().includes(query.toLowerCase()) ||
+        game.description.toLowerCase().includes(query.toLowerCase()) ||
+        game.category.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    populateCategories();
+    populateGames(games);
+
+    categoryList.addEventListener('click', (event) => {
+      event.preventDefault();
+      const categoryLink = event.target.closest('.category-link');
+      if (categoryLink) {
+        const category = categoryLink.getAttribute('data-category');
+        const filteredGames = category === 'all' ? games : games.filter(game => game.category.toLowerCase() === category);
+        populateGames(filteredGames);
+      }
+    });
+
+    gameGrid.addEventListener('click', (event) => {
+      const gameCard = event.target.closest('.game-card');
+      if (gameCard) {
+        const gameId = gameCard.getAttribute('data-game-id');
+        window.location.href = `game.html?id=${encodeURIComponent(gameId)}`;
+      }
+    });
+
+    searchButton.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (query) {
+        const searchResults = searchGames(query);
+        populateGames(searchResults);
+      } else {
+        populateGames(games);
+      }
+    });
+
+    searchInput.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        searchButton.click();
+      }
+    });
+
+    loginButton.addEventListener('click', () => {
+      loginModal.classList.remove('hidden');
+    });
+
+    registerButton.addEventListener('click', () => {
+      registerModal.classList.remove('hidden');
+    });
+
+    loginSubmit.addEventListener('click', () => {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      // Here you would typically send this data to a server for authentication
+      console.log(`Login attempt: ${username}, ${password}`);
+      alert('Login functionality would be implemented here.');
+      loginModal.classList.add('hidden');
+    });
+
+    registerSubmit.addEventListener('click', () => {
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      // Here you would typically send this data to a server for registration
+      console.log(`Register attempt: ${username}, ${password}`);
+      alert('Registration functionality would be implemented here.');
+      registerModal.classList.add('hidden');
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === loginModal) {
+        loginModal.classList.add('hidden');
+      }
+      if (event.target === registerModal) {
+        registerModal.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
