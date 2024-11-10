@@ -1,3 +1,6 @@
+console.log('Games.js loaded');
+
+
 const games = [
   {
     id: "0d95d64a4b8e440981a7b067c483cdf2",
@@ -22,3 +25,5 @@ const games = [
 ];
 
 console.log('Games loaded in games.js:', games.length);
+
+

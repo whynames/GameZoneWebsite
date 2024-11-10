@@ -46,22 +46,26 @@
     </div>
   </main>
 
+  <!-- The Static-Friendly JavaScript Below -->
   <script src="games.js"></script>
   <script>
     const gameContainer = document.getElementById('gameContainer');
     const gameTitle = document.getElementById('gameTitle');
 
+    // Get game ID from URL (even in a static setup)
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('id');
 
+    // Find the game in games.js by ID
     const game = games.find(g => g.id === gameId);
 
     if (game) {
       gameTitle.textContent = game.title;
+
+      // Use static URLs for embedded or Unity games based on game type
       if (game.type === 'embedded') {
         const iframe = document.createElement('iframe');
-        const currentPageUrl = encodeURIComponent(window.location.href);
-        iframe.src = `https://html5.gamedistribution.com/${game.id}/?gd_sdk_referrer_url=${currentPageUrl}`;
+        iframe.src = `https://html5.gamedistribution.com/${game.id}/`;
         iframe.width = '100%';
         iframe.height = '600';
         iframe.scrolling = 'no';
@@ -69,7 +73,7 @@
         gameContainer.appendChild(iframe);
       } else if (game.type === 'unity' || game.type === 'custom') {
         const iframe = document.createElement('iframe');
-        iframe.src = game.path;
+        iframe.src = game.path; // Ensure `game.path` points to a valid URL
         iframe.width = '100%';
         iframe.height = '600';
         iframe.scrolling = 'no';
